@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+# Files and Directories #
+DIR="$HOME/.config/bspwm"
+
+# kill dunst daemon #
+if [[ `pidof dunst` ]];
+	
+	then
+		
+		pkill dunst
+		
+fi
+
+# Launch dunst daemon #
+dunst -config "$DIR"/dunst/dunstrc &

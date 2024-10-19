@@ -1,0 +1,149 @@
+#!/usr/bin/env bash
+
+
+# bspwm config directory #
+BSPWM_DIR="$HOME/.config/bspwm"
+MODE_STATUS=$(grep -oP 'all-windows-float = \K.*' "${BSPWM_DIR}/exodia.conf")
+if [[ -z $MODE_STATUS ]];
+
+   then
+
+      MODE_STATUS=false
+
+fi
+
+# remove all rules first #
+bspc rule -r *:*
+
+# Check the status of #
+if [[ ${MODE_STATUS} == "true" ]];
+   
+   then
+
+      # All Windows in floating mode #
+      bspc rule -a '*' state=floating
+
+else
+
+   # ----- apps open in terminal workspaces ----- #
+   declare -a terminals=(Xfce4-terminal)
+   for i in ${terminals[@]};
+      
+      do
+         
+         bspc rule -a $i desktop='^1' follow=on focus=on;
+      
+      done
+   
+   # ----- apps open in web workspaces ----- #
+   declare -a web=(guiscrcpy kdeconnect.app MEGAsync Element Free Protonvpn)
+   for i in ${web[@]};
+      
+      do
+         
+         bspc rule -a $i desktop='^2' state=floating follow=on focus=on;
+      
+      done
+   
+   bspc rule -a firefox desktop='^2' follow=on focus=on
+   bspc rule -a chromium desktop='^2' follow=on focus=on
+   bspc rule -a Google-chrome desktop='^2' follow=on focus=on
+   
+   # ----- apps open in files workspaces ----- #
+   declare -a files=(Pcmanfm Caja)
+   for i in ${files[@]};
+      
+      do
+         
+         bspc rule -a $i desktop='^3' follow=on focus=on;
+      
+      done
+   
+   # ----- apps open in code workspaces ----- #
+   declare -a code=(code-oss Code Leafpad)
+   for i in ${code[@]};
+      
+      do
+         
+         bspc rule -a $i desktop='^4' follow=on focus=on;
+            
+      done
+   
+   bspc rule -a github-desktop desktop ='^4' state=floating follow=on focus=on
+   
+   # jetBrains IDEs #
+   declare -a jetBrains=(\
+   jetbrains-clion jetbrains-idea jetbrains-pycharm \
+   jetbrains-fleet jetbrains-webstorm jetbrains-gateway \
+   jetbrains-writerside jetbrains-mps jetbrains-clion-nova \
+   jetbrains-rustrover
+   )
+   
+   for i in ${jetBrains[@]};
+      
+      do
+         
+         # bspc rule -a $i desktop='^4' state=floating follow=on focus=on;
+         bspc rule -a $i state=floating follow=on focus=on;
+      
+      done
+   
+   # Markdown editors #
+   # bspc rule -a inkdrop desktop ='^4' state=floating follow=on focus=on
+   bspc rule -a inkdrop state=floating follow=on focus=on
+   
+   
+   # ----- apps open in office and docs workspaces ----- #
+   declare -a office=(Gucharmap Evince wps wpp et \
+   libreoffice-writer libreoffice-calc libreoffice-impress \
+   libreoffice-startcenter libreoffice Soffice *:libreofficedev *:soffice)
+   
+   for i in ${office[@]};
+      
+      do
+         
+         bspc rule -a $i desktop='^5' follow=on focus=on;
+      
+      done
+   
+   # ----- apps open in Communication workspaces ----- #
+   declare -a comm=(Thunderbird Hexchat streamlink-twitch-gui)
+   for i in ${comm[@]};
+      
+      do
+         
+         bspc rule -a $i desktop='^6' state=floating follow=on focus=on;
+      
+      done
+   
+   # ----- apps open in media workspaces ----- #
+   declare -a media=(Music MPlayer Lxmusic Inkscape Gimp-2.10 Spotify)
+   for i in ${media[@]};
+      
+      do
+         
+         bspc rule -a $i desktop='^7' state=floating follow=on focus=on;
+      
+      done
+      
+   
+   # ----- apps open in settings workspaces ----- #
+   bspc rule -a 'VirtualBox Manager' desktop='^8' follow=on focus=on
+   bspc rule -a GParted desktop='^8' follow=on focus=on
+   declare -a settings=(Lxtask Lxrandr Arandr \
+   System-config-printer.py Pavucontrol Exo-helper-1 \
+   Xfce4-power-manager-settings)
+   
+   # ----- special rules ----- #
+   declare -a floating=(Pcmanfm Onboard Yad 'Firefox:Places' \
+   Viewnior feh Nm-connection-editor)
+   for i in ${floating[@]}; do
+      bspc rule -a $i state=floating follow=on focus=on; done
+   
+   bspc rule -a Conky state=floating manage=off
+   bspc rule -a stalonetray state=floating manage=off
+   bspc rule -a gwenview state=floating follow=on focus=on
+   bspc rule -a Galculator state=floating follow=on focus=on
+   bspc rule -a PacketTracer state=floating follow=on focus=on
+
+fi

@@ -1,0 +1,13 @@
+const unsigned int borderpx  = 2;
+const unsigned int snap      = 25;
+const unsigned int gappih    = 20;
+const unsigned int gappiv    = 10;
+const unsigned int gappoh    = 15;
+const unsigned int gappov    = 8;
+const int swallowfloating    = 0;
+const int smartgaps          = 0;
+const int showbar            = 1;
+const int topbar             = 1;
+const int showsystray        = 1;
+const int user_bh            = 40;
+static const char *fonts[]          = { "Iosevka Term:style=Regular:size=11", "Symbols Nerd Font:size=40","JoyPixels:size=40:antialias=true:autohint=true"};

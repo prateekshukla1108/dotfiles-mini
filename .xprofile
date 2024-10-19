@@ -1,0 +1,11 @@
+#!/bin/sh
+
+[[ -f "$HOME/.xsync" ]] && $HOME/.xsync || xrandr --auto
+
+xrdb ~/.config/.Xresources
+# Below sources configuration file to fetch picom
+picom --config ~/.config/bspwm/picom/default.conf & # Run picom as default compositor (Enable experimental backends from ~/.config/phyos/phyos.conf)
+[[ -f /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 ]] && /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
+feh --bg-fill /home/prateek/theme/arch-1080p.png &
+/home/prateek/.setgamma.sh
+

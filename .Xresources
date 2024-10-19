@@ -1,0 +1,11 @@
+
+
+#include ".Xresources.d/colors"
+#include ".Xresources.d/fonts"
+Xft.dpi: 150
+XTerm.font: 10x20
+URxvt.font: 10x20
+*termFont: 10x20
+Gtk.fontsize: 12
+Gtk.scale_factor: 1.5
+Xcursor.size: 40

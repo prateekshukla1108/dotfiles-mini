@@ -1,0 +1,25 @@
+#!/bin/sh
+
+mkdir -p "$HOME/.cache/phyos/"{pdwm,dots}
+cd "$HOME/.cache/phyos/$1"
+dots="/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME"
+
+if [ "$1" == "dots" ] && [ "$2" == "--force" ]; then
+        yes | rm -r ~/.cfg
+        git clone "https://github.com/FT-Labs/dotfiles" && mv dotfiles/.git "$HOME/.cfg" && cp -r dotfiles/.* "$HOME/" || rm -rf dotfiles
+        $dots config --local status.showUntrackedFiles no
+        $dots checkout -b local
+elif [ "$1" == "dots" ]; then
+    if [[ -d "$HOME/.cfg" ]]; then
+        $dots pull origin master --rebase
+        $dots checkout local
+        $dots add -u
+        $dots commit -m "local"
+        $dots merge master
+    else
+		rm -rf "$HOME/.*"
+        git clone "https://github.com/FT-Labs/dotfiles" && mv dotfiles/.git "$HOME/.cfg" && cp -r dotfiles/.* "$HOME/" || rm -rf dotfiles
+        $dots config --local status.showUntrackedFiles no
+        $dots checkout -b local
+    fi
+fi

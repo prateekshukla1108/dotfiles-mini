@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# ask for sudo password #
+export SUDO_ASKPASS=~/.config/bspwm/bin/askpass
+
+# execute the application #
+sudo -A $1

@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+rofi -dmenu\
+     -password\
+     -i\
+     -no-fixed-num-lines\
+     -p "[] Enter sudo Password, Mr.${USER}: "\
+     -theme ~/.config/bspwm/rofi/themes/askpass.rasi

@@ -1,0 +1,95 @@
+#!/bin/bash
+
+
+te() {
+    [ -z $1 ] && exit
+}
+
+opts="\
+-kb-mode-next "Caps_Lock" \
+-kb-row-right "Tab""
+
+updateicon() {
+	echo "$1" > /tmp/recordingicon
+	pkill -RTMIN+9 "${STATUSBAR:-dwmblocks}"
+}
+
+killrecording() {
+	recpid="$(cat /tmp/recording)"
+	# kill with SIGTERM, allowing finishing touches.
+	kill -15 "$recpid"
+	rm -f /tmp/recording
+	updateicon ""
+	pkill -RTMIN+9 "${STATUSBAR:-dwmblocks}"
+	# even after SIGTERM, ffmpeg may still run, so SIGKILL it.
+	sleep 3
+	kill -9 "$recpid"
+    notify-send "󰻃 Recording Finished"
+	exit
+}
+
+screencast() {
+    [ $2 = "Yes" ] && sound="-f alsa -i default" || sound=""
+    frame_rate=$(printf '15\n30\n60' | rofi $opts -dmenu -p 'Please choose refresh rate:')
+    te $frame_rate
+    name="screencast-$(date '+%y%m%d-%H%M-%S')"
+    name=$(echo $name | rofi $opts -dmenu -p "Rename file? (Enter for default)")
+	if [ $(lsmod | grep nvidia) ]; then
+			ffmpeg -y \
+			-video_size "$1" \
+			-framerate "$frame_rate" \
+			-f x11grab \
+			-hwaccel cuda \
+			-i "$DISPLAY${3}" \
+			$sound \
+			-c:v h264_nvenc -preset slow \
+			"$HOME/Videos/$name.mkv" &
+			echo $! > /tmp/recording
+			updateicon "󰻃"
+	else
+		ffmpeg -y \
+		-video_size "$1" \
+		-framerate "$frame_rate" \
+		-f x11grab \
+		-i "$DISPLAY${3}" \
+		$sound \
+		-c:v libx264rgb -crf 0 -preset ultrafast -color_range 2 \
+		"$HOME/Videos/$name.mkv" &
+		echo $! > /tmp/recording
+		updateicon "󰻃"
+	fi
+}
+
+[ -f /tmp/recording ] && \
+    killrecording
+
+
+chosen=$(printf '󰍹  Choose Display\n麗  Choose Recording Area\n󰍺  Record All' | rofi $opts -dmenu -p 'Recording Options:')
+
+case $chosen in
+    "󰍹  Choose Display")
+        allposs=$(xrandr -q | grep "connected" | sed 's/primary//g')
+        declare -A screens
+        eval `echo "$allposs" | awk -vOFS='=' '/ connected/ {print "screens["$1"]",$3}'`
+        chosen=$(echo ${!screens[@]} | tr ' ' '\n' | rofi $opts -dmenu -p 'Which monitor?')
+        res=$(echo "${screens[$chosen]}" | cut -d '+' -f 1)
+        offset="+$(echo "${screens[$chosen]}" | cut -d '+' -f 2- --output-delimiter=',')"
+        sound=$(printf 'Yes\nNo' | rofi -dmenu -p 'Record sound?')
+        screencast "$res" "$sound" "$offset"
+        ;;
+    "麗  Choose Recording Area")
+        resall=$(slop)
+        res=$(echo $resall | cut -d '+' -f 1)
+        offset="+$(echo $resall | cut -d '+' -f 2- --output-delimiter=',')"
+        sound=$(printf 'Yes\nNo' | rofi -dmenu -p 'Record sound?')
+        screencast "$res" "$sound" "$offset"
+        ;;
+    "󰍺  Record All")
+        arg=$(xrandr -q | grep -oE 'current.*' | awk -vOFS='' '{print $2,$3,$4}')
+        sound=$(printf 'Yes\nNo' | rofi -dmenu -p 'Record sound?')
+        screencast "${arg::-1}" "$sound"
+        ;;
+esac
+
+# name=recording-"$(date '+%y%m%d-%H%M-%S')"
+# name=$(echo $name | rofi -dmenu -p "Rename file? (Enter for default)")

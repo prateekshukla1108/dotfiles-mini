@@ -1,0 +1,43 @@
+#!/bin/zsh
+
+local usage=(
+"bm [-h|--help]"
+"bm [-r|--remove] \$bookmark"
+"bm [-a|--add] \$destdir \@aliasname"
+"bm [-c|--clear] Clear all bookmarks"
+)
+
+zmodload zsh/zutil
+zparseopts -D -E -F -- \
+{h,-help}=flag_help \
+{a,-add}:=add \
+{r,-remove}:=rm \
+{f,-force}=force \
+{c,-clear}+=clear ||
+return 1
+
+[[ -z "$flag_help" ]] || { print -l $usage && return }
+
+if [[ ! -z $add ]]; then
+    if [[ -z $1 ]]; then
+        cfg="$ZSHCFG/bookmarks/${add[2]}"
+        dir=$(pwd)
+        [[ ! -z $force ]] && ln -sf "$dir" $cfg || ln -s "$dir" $cfg
+        [[ $? == 0 ]] && echo "Bookmark: ${add[2]} saved succesfully" || echo "Error, ${add[2]} exists. To overwrite use [-f|--force]."
+    else
+        cd "${add[2]}"
+        dir=$(pwd)
+        cfg="$ZSHCFG/bookmarks/$1"
+        [[ ! -z $force ]] && ln -sf "$dir" $cfg || ln -s "$dir" $cfg
+        [[ $? == 0 ]] && echo "Bookmark: $1 saved succesfully" || \\
+        echo "Error, $1 exists. To overwrite use [-f|--force]."
+    fi
+fi
+if [[ ! -z $rm ]]; then
+    rm "$ZSHCFG/bookmarks/${rm[2]}"
+    [[ $? == 0 ]] && echo "Bookmark: ${rm[2]} erased succesfully" || echo "Error, ${rm[2]} doesn't exist"
+fi
+if [[ ! -z $flag_clear ]]; then
+    yes | rm -r $ZSHCFG/bookmarks/*
+    [[ $? == 0 ]] && echo "Bookmarks cleared succesfully" || echo "Error, can't clear bookmarks"
+fi
