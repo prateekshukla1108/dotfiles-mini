@@ -5,7 +5,7 @@ sudo pacman -Syu --noconfirm
 
 # Install Apps #
 
-sudo pacman -S rofi alacritty kitty nvim ranger geany fish picom polkit-gnome polkit
+sudo pacman -S rofi alacritty kitty neovim ranger geany fish picom polkit-gnome polkit libx11 libxft xorg-server xorg-xinit xorg-xsetroot gd
 
 # Append necessary lines to configuration files (Adding qt5ct and qt6ct in environment)
 echo "DNS=2606:4700:4700::1111 2606:4700:4700::1001" | sudo tee -a /etc/systemd/resolved.conf
