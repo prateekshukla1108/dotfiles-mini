@@ -8,7 +8,6 @@ sudo pacman -Syu --noconfirm
 sudo pacman -S rofi alacritty kitty neovim ranger geany fish picom polkit-gnome polkit libx11 libxft xorg-server xorg-xinit xorg-xsetroot gd
 
 # Append necessary lines to configuration files (Adding qt5ct and qt6ct in environment)
-echo "DNS=2606:4700:4700::1111 2606:4700:4700::1001" | sudo tee -a /etc/systemd/resolved.conf
 echo "QT_QPA_PLATFORMTHEME=qt6ct" | sudo tee -a /etc/environment
 echo "QT_QPA_PLATFORMTHEME=qt5ct" | sudo tee -a /etc/environment
 echo "export QT_SCALE_FACTOR=1.25" | sudo tee -a /etc/environment
