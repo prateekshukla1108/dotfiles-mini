@@ -5,6 +5,9 @@
 phyOS dwm window manager is used here. You can install it by firstly installing dependencies - 
 
 Here are the installation instructions for the necessary development packages across **Fedora**, **Debian**, **Arch Linux**, and **Void Linux**. This includes all the packages discussed earlier, such as `git`, `make`, `gcc`, `g++`, `libx11-dev`, `libxft-dev`, `libxinerama-dev`, `ncurses`, `dbus-x11`, `imlib2-dev`, and `libconfig-dev`.
+
+> Note here that Xorg is the main requirement here. This will only work if you have installed xorg
+
 ### Fedora
 1. **Update your system**:
    ```bash
